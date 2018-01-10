@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
-
+using System;
+using System.Threading;
+//https://weblogs.asp.net/ricardoperes/signalr-in-asp-net-core
 namespace Fiver.Asp.SignalR.Server
 {
     public class Startup
@@ -32,6 +34,13 @@ namespace Fiver.Asp.SignalR.Server
             {
                 routes.MapHub<ReportsPublisher>("reportsPublisher");
             });
+            var timer = new Timer((x)=> {
+                //后台直接触发发送消息
+                var hub = app.ApplicationServices.GetService<IHubContext<ReportsPublisher>>();
+                hub.Clients.All.InvokeAsync("OnReportPublished", DateTime.Now);
+            });
+            timer.Change(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10));
+           
         }
     }
 }
