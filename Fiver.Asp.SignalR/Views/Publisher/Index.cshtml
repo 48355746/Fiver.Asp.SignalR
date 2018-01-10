@@ -12,7 +12,7 @@
             let hubConnection = new signalR.HubConnection(httpConnection);
 
             $("#publishReport").click(function () {
-                hubConnection.invoke('PublishReport', $('#reportName').val());
+                hubConnection.invoke('PublishReport', $('#reportName').val()+"eee");
             });
 
             hubConnection.start();
