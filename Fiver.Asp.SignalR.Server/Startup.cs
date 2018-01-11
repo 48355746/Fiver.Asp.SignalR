@@ -33,13 +33,17 @@ namespace Fiver.Asp.SignalR.Server
             app.UseSignalR(routes =>  // <-- SignalR
             {
                 routes.MapHub<ReportsPublisher>("reportsPublisher");
+                routes.MapHub<ChatHub>("chat");
             });
             var timer = new Timer((x)=> {
                 //后台直接触发发送消息
                 var hub = app.ApplicationServices.GetService<IHubContext<ReportsPublisher>>();
-                hub.Clients.All.InvokeAsync("OnReportPublished", DateTime.Now);
+               
+                hub.Clients.All.InvokeAsync("OnReportPublished", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                
+                //hub.Clients.Group("groupName").InvokeAsync("SendToGroup","", DateTime.Now);
             });
-            timer.Change(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10));
+            timer.Change(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(3));
            
         }
     }
